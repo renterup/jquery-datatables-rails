@@ -567,7 +567,7 @@ Responsive.prototype = {
 			// On the last column, add any remainder to ensure it all adds up to 100
 			if (index == (headers.length - 1)) { width += new_width_total }
 
-			colgroup.append('<col width="' + width + '%"/>');
+			colgroup.append('<col style="width: ' + width + '%;"/>');
 		});
 
 		table.prepend(colgroup)
