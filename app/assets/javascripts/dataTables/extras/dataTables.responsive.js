@@ -524,6 +524,26 @@ Responsive.prototype = {
 		}
 	},
 
+	/**
+	 * Add a <colgroup> and child <col> elements and set HTML width
+	 * attributes to whatever the corresponding <th> element's col-width
+	 * attribute is.
+	 *
+	 * @private
+	 */
+	_setColgroup: function()
+	{
+		var table = $(this.s.dt.table().node());
+
+		table.find('colgroup').remove();
+		
+		var colgroup = $('<colgroup></colgroup>');
+		table.find('thead th').each(function() {
+			colgroup.append('<col width="' + $(this).attr('col-width') + '"/>');
+		});
+
+		table.prepend(colgroup)
+	},
 
 	/**
 	 * Alter the table display for a resized viewport. This involves first
@@ -553,6 +573,8 @@ Responsive.prototype = {
 		dt.columns().eq(0).each( function ( colIdx, i ) {
 			dt.column( colIdx ).visible( columns[i] );
 		} );
+
+		this._setColgroup();
 	},
 
 
