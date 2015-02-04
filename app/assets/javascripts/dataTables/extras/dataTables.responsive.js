@@ -538,8 +538,36 @@ Responsive.prototype = {
 		table.find('colgroup').remove();
 		
 		var colgroup = $('<colgroup></colgroup>');
-		table.find('thead th').each(function() {
-			colgroup.append('<col width="' + $(this).attr('col-width') + '"/>');
+		var headers  = table.find('thead th');
+
+		// Ensure the widths add to 100%
+		//
+		// example:
+		// if visible <th> col-width values are "45%" and "15%":
+		// orig_widths will be [45, 15]
+		// orig_width_total will be 60
+		// multiplier will be 100.0 / 60 = 1.66666...
+		// <col> 1 width will be set to Math.floor(1.66 * 45) = 75%
+		// <col> 2 width will be set to Math.floor(1.66 * 25) = 25%
+		var orig_widths = [];
+		var orig_width_total = 0;
+		headers.each(function() {
+			var width = parseInt($(this).attr('col-width').replace('%', ''));
+			orig_widths.push(width);
+			orig_width_total += width;
+		});
+
+		var new_width_total = 100;
+		var multiplier = (new_width_total * 1.0) / orig_width_total;
+
+		headers.each(function(index) {
+			var width = Math.floor(orig_widths[index] * multiplier);
+			new_width_total -= width;
+
+			// On the last column, add any remainder to ensure it all adds up to 100
+			if (index == (headers.length - 1)) { width += new_width_total }
+
+			colgroup.append('<col width="' + width + '%"/>');
 		});
 
 		table.prepend(colgroup)
