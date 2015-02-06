@@ -571,6 +571,9 @@ Responsive.prototype = {
 		});
 
 		table.prepend(colgroup)
+
+		// Ensure that the "empty message" row spans the appropriate number of cols
+		table.find('.dataTables_empty:visible').attr('colspan', headers.length)
 	},
 
 	/**
